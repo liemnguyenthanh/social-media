@@ -1,5 +1,6 @@
+import theme from '@/shared/themes';
+import { CssBaseline, ThemeProvider } from '@mui/material';
 import type { Metadata } from 'next';
-import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Social Media',
@@ -7,5 +8,12 @@ export const metadata: Metadata = {
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
-  return <html lang="en">{children}</html>;
+  return (
+    <html lang="en">
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        {children}
+      </ThemeProvider>
+    </html>
+  );
 }
