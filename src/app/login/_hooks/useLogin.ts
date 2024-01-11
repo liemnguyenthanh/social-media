@@ -5,6 +5,8 @@ import { useMutationLogin } from './useMutationLogin';
 import { useEffect } from 'react';
 import { TLoginForm } from '@/types';
 import { useSnackbar } from 'notistack';
+import { saveTokenToLocalStorage } from '@/utils/auth';
+import { sleep } from '@/utils/helper';
 
 const schema: yup.ObjectSchema<TLoginForm> = yup.object().shape({
   username: yup.string().required('Username is required'),
@@ -28,23 +30,31 @@ export const useLogin = () => {
     })();
   };
 
-  useEffect(() => {
-    if (!data) return;
-    const { access_token, message } = data;
+  const onToastError = (message: string) => {
+    enqueueSnackbar(message, { variant: 'error' });
+  };
 
-    if (access_token) {
-      enqueueSnackbar(access_token, { variant: 'success' });
-      return;
-    }
-    if (message) {
-      enqueueSnackbar(message, { variant: 'error' });
-      return;
-    }
+  useEffect(() => {
+    const handleData = async () => {
+      if (!data) return;
+      const { access_token, message } = data;
+
+      if (message) {
+        return onToastError(message);
+      }
+
+      if (access_token) {
+        saveTokenToLocalStorage(access_token);
+        await sleep(1000);
+        window.location.reload();
+      }
+    };
+    handleData();
   }, [data, isSuccess]);
 
   useEffect(() => {
     const messageError = error?.message;
-    if (messageError) enqueueSnackbar(messageError, { variant: 'error' });
+    if (messageError) onToastError(messageError);
   }, [error]);
 
   return {

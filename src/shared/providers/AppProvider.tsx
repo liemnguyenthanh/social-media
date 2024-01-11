@@ -1,15 +1,32 @@
 'use client';
-import { CssBaseline, StyledEngineProvider, ThemeProvider } from '@mui/material';
-import { PropsWithChildren } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import theme from '../themes';
 import '@/services/config';
+import { CssBaseline, StyledEngineProvider, ThemeProvider } from '@mui/material';
 import { SnackbarProvider } from 'notistack';
-import { MAX_STACK_NOTIFY } from '../constants';
+import { PropsWithChildren, useEffect } from 'react';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { AppRouter, MAX_STACK_NOTIFY } from '../constants';
+import theme from '../themes';
+import { getTokenFromLocalStorage } from '@/utils/auth';
+import { redirect, usePathname } from 'next/navigation';
 
 const queryClient = new QueryClient();
 
 export const AppProvider = ({ children }: PropsWithChildren) => {
+  const pathname = usePathname();
+
+  useEffect(() => {
+    const hasToken = !!getTokenFromLocalStorage();
+    const shouldLogin = !hasToken && AppRouter.LOGIN !== pathname;
+
+    if (shouldLogin) {
+      redirect(AppRouter.LOGIN);
+    }
+
+    if (AppRouter.LOGIN === pathname) {
+      redirect(AppRouter.INDEX);
+    }
+  }, []);
+
   return (
     <QueryClientProvider client={queryClient}>
       <StyledEngineProvider injectFirst>
