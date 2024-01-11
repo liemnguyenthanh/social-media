@@ -1,7 +1,7 @@
 'use client';
 
-import { Box } from '@mui/material';
+import HomePage from './_home/HomePage';
 
 export default function Home() {
-  return <Box>Home page</Box>;
+  return <HomePage />;
 }

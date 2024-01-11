@@ -1,7 +1,5 @@
-import theme from '@/shared/themes';
-import { CssBaseline, ThemeProvider } from '@mui/material';
+import { AppProvider } from '@/shared/providers';
 import type { Metadata } from 'next';
-
 export const metadata: Metadata = {
   title: 'Social Media',
   description: 'this app was build for test api using golang!!',
@@ -10,10 +8,9 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <ThemeProvider theme={theme}>
-        <CssBaseline />
-        {children}
-      </ThemeProvider>
+      <body>
+        <AppProvider>{children}</AppProvider>
+      </body>
     </html>
   );
 }
